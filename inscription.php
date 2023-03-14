@@ -1,5 +1,4 @@
 <?php
-// session_start();
 require('User.php');
 // $username = "root";
 // $password = "";

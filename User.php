@@ -29,7 +29,7 @@ class User
         try {
             $this->bd = new PDO("mysql:host=localhost;dbname=révisions;charset=utf8mb4", $username, $password);
             $this->bd->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            echo "Connected successfully";
+            echo "Connected successfully" . "<br>";
         } catch (PDOException $e) {
             echo "Connection failed: " . $e->getMessage();
         }
@@ -61,13 +61,16 @@ class User
     public function isConnected()
     {
         if (empty($_SESSION)) {
+            echo "false";
             return false;
             
         } else {
+            echo "true";
             return true;
         
         }
     }
+  
     public function getlogin()
     {
         // $getLog = $this->bd->prepare("SELECT * FROM utilisateurs WHERE login = ?");
@@ -110,11 +113,11 @@ class User
     {
     }
 }
-$user = new User('test', 'test', 'test', 'test', 'test');
+// $user = new User('test', 'test', 'test', 'test', 'test');
 // $user->getlogin();
 // var_dump($_SESSION);
 // $user->setlogin("ed");
 // $user->register();
-$user->connect();
+// $user->connect();
 // $user->disconnect();
 // $user->isConnected();
