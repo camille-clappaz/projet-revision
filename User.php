@@ -49,7 +49,7 @@ class User
             $message = "votre login ou mdp est incorrect";
         } else {
             $_SESSION = $result[0];
-         
+
             $message = "vous etes connecté";
         }
         echo $message;
@@ -59,14 +59,15 @@ class User
         session_destroy();
     }
     public function isConnected()
-  {
-    if(empty($_SESSION)){
-        return false;
+    {
+        if (empty($_SESSION)) {
+            return false;
+            
+        } else {
+            return true;
+        
+        }
     }
-    else{
-        return true;
-    }
-  }
     public function getlogin()
     {
         // $getLog = $this->bd->prepare("SELECT * FROM utilisateurs WHERE login = ?");
@@ -114,9 +115,6 @@ $user = new User('test', '@', 'test2', 'test', 'test');
 var_dump($_SESSION);
 // $user->setlogin("ed");
 // $user->register();
-// $user->connect();
+$user->connect();
 // $user->disconnect();
 // $user->isConnected();
-
-
-?>
