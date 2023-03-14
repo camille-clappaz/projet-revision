@@ -4,7 +4,7 @@ require('User.php');
 if(isset($_POST['modifier'])){
     $user = new user($_POST['login'], $_POST['firstname'], $_POST['lastname'], $_POST['email'], $_POST['password']);
     $user->update([$_POST['login'], $_POST['firstname'], $_POST['lastname'], $_POST['email'], $_POST['password']]);
-    // header('refresh');
+    
 }
 
 ?>
@@ -16,6 +16,6 @@ if(isset($_POST['modifier'])){
     <input type="text" name="password" value=<?=$_SESSION['password']?>>
     <input type="text" name="confirm_password" value=<?=$_SESSION['password']?>>
     <button type="submit" name="modifier">Modifier</button>
-
+    <?php header('refresh');?>
 
 </form>
