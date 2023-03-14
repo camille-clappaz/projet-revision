@@ -110,9 +110,9 @@ class User
     {
     }
 }
-$user = new User('test', '@', 'test2', 'test', 'test');
+$user = new User('test', 'test', 'test', 'test', 'test');
 // $user->getlogin();
-var_dump($_SESSION);
+// var_dump($_SESSION);
 // $user->setlogin("ed");
 // $user->register();
 $user->connect();
