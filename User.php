@@ -39,14 +39,29 @@ class User
         $addUser = $this->bd->prepare("INSERT INTO `utilisateurs`(`login`, `password`, `email`, `firstname`, `lastname`) VALUES (?,?,?,?,?) ");
         $addUser->execute([$this->login, $this->password, $this->email, $this->firstname, $this->lastname]);
     }
+    // public function update($login, $firstname, $lastname, $email, $password)
+    // {
+    //     $updateUser = $this->bd->prepare("UPDATE `utilisateurs` SET `login`=:login,`password`=:password,`email`=:email,`firstname`=:firstname,`lastname`=:lastname WHERE id=:id");
+    //     $data = ['login' => $this->login,'password' => $this->password,'email' => $this->email,'firstname' => $this->firstname,'lastname' => $this->lastname,'id' => $_SESSION['id']];
+    //     $updateUser->execute($data);
+    //     $_SESSION=$data;
+    // }
     public function update($login, $firstname, $lastname, $email, $password)
     {
-        $updateUser = $this->bd->prepare("UPDATE `utilisateurs` SET `login`=:login,`password`=:password,`email`=:email,`firstname`=:firstname,`lastname`=:lastname WHERE id=:id");
-        $data = ['login' => $this->login,'password' => $this->password,'email' => $this->email,'firstname' => $this->firstname,'lastname' => $this->lastname,'id' => $_SESSION['id']];
-        $updateUser->execute($data);
-        $_SESSION=$data;
+        $updateUser = $this->bd->prepare("UPDATE `utilisateurs` SET `login`=?,`password`=?,`email`=?,`firstname`=?,`lastname`=? WHERE id=?");
+        //mise à jour des attributs
+        $this->login=$login;  $this->password=$password; $this->email=$email; $this->firstname=$firstname; $this->lastname=$lastname;
+        // setlogin($login);
+        $updateUser->execute([$this->login, $this->password, $this->email, $this->firstname, $this->lastname, 
+        //mise à jour de la session :
+        $_SESSION['id']]);
+        $_SESSION['login']=$login;
+        $_SESSION['password']=$password;
+        $_SESSION['email']=$email;
+        $_SESSION['firstname']=$firstname;
+        $_SESSION['lastname']=$lastname;        
     }
-    public function connect()
+    public function connect($login,$password)
     {
         $connect = $this->bd->prepare("SELECT * from utilisateurs WHERE login=? AND password=?");
         $connect->execute([$this->login, $this->password]);
@@ -85,28 +100,28 @@ class User
     }
     public function setlogin($login)
     {
-        
+        $this->login=$login; 
     }
     public function getpassword()
-    {
+    {return $this->login;
     }
     public function setpassword($password)
     {
     }
     public function getemail()
-    {
+    {return $this->login;
     }
     public function setemail($email)
     {
     }
     public function getfirstname()
-    {
+    {return $this->login;
     }
     public function setfirstname($firstname)
     {
     }
     public function getlasttname()
-    {
+    {return $this->login;
     }
     public function setlastname($lastname)
     {

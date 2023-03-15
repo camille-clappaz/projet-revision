@@ -16,6 +16,6 @@ if(isset($_POST['modifier'])){
     <input type="text" name="password" value=<?=$_SESSION['password']?>>
     <input type="text" name="confirm_password" value=<?=$_SESSION['password']?>>
     <button type="submit" name="modifier">Modifier</button>
-    <?php header('refresh');?>
+     <?php header('refresh');?>
 
 </form>
