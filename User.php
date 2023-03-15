@@ -51,7 +51,7 @@ class User
         $updateUser = $this->bd->prepare("UPDATE `utilisateurs` SET `login`=?,`password`=?,`email`=?,`firstname`=?,`lastname`=? WHERE id=?");
         //mise à jour des attributs
         $this->login=$login;  $this->password=$password; $this->email=$email; $this->firstname=$firstname; $this->lastname=$lastname;
-        // setlogin($login);
+        // $this->setlogin($login);
         $updateUser->execute([$this->login, $this->password, $this->email, $this->firstname, $this->lastname, 
         //mise à jour de la session :
         $_SESSION['id']]);

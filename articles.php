@@ -12,7 +12,6 @@ try {
 
 function displayUser($bd, $order)
 {
-    $order = "";
     $displayUser = $bd->prepare("SELECT utilisateurs.login, articles.article FROM `utilisateurs` INNER JOIN `articles` ON id_utilisateur = utilisateurs.id ORDER BY articles.id $order");
     $displayUser->execute();
     $result = $displayUser->fetchAll(PDO::FETCH_ASSOC);
@@ -22,24 +21,24 @@ function displayUser($bd, $order)
 // var_dump(displayUser($bd));
 
 if (isset($_GET['inverser'])) {
-    if ($order = "DESC") {
+    if ($_GET['inverser'] == "DESC") {
         $order = "ASC";
-        displayUser($bd,$order);
-    
+        displayUser($bd, $order);
     } else {
         $order = "DESC";
-        displayUser($bd,$order);
+        displayUser($bd, $order);
     }
 } else {
     $order = "DESC";
-    displayUser($bd,$order);
+    displayUser($bd, $order);
 }
-var_dump($order);
+var_dump($_SESSION['order']);
 ?>
 <table>
 
     <?php
-    $result = displayUser($bd, $order); ?>
+    $result = displayUser($bd, $order);
+    ?>
     <form action="" method="get">
         <?php for ($i = 0; $i < count($result); $i++) :
         ?>
@@ -53,5 +52,5 @@ var_dump($order);
 
 
 </table>
-<button type="submit" name="inverser"> Inverser</button>
+<button type="submit" name="inverser" value=<?= $order ?>> Inverser</button>
 </form>
