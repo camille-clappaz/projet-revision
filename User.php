@@ -39,10 +39,12 @@ class User
         $addUser = $this->bd->prepare("INSERT INTO `utilisateurs`(`login`, `password`, `email`, `firstname`, `lastname`) VALUES (?,?,?,?,?) ");
         $addUser->execute([$this->login, $this->password, $this->email, $this->firstname, $this->lastname]);
     }
-    public function update()
+    public function update($login, $firstname, $lastname, $email, $password)
     {
-        $updateUser = $this->bd->prepare("UPDATE `utilisateurs` SET `login`=?,`password`=?,`email`=?,`firstname`=?,`lastname`=? WHERE login=?");
-        $updateUser->execute([$this->login, $this->password, $this->email, $this->firstname, $this->lastname]);
+        $updateUser = $this->bd->prepare("UPDATE `utilisateurs` SET `login`=:login,`password`=:password,`email`=:email,`firstname`=:firstname,`lastname`=:lastname WHERE id=:id");
+        $data = ['login' => $this->login,'password' => $this->password,'email' => $this->email,'firstname' => $this->firstname,'lastname' => $this->lastname,'id' => $_SESSION['id']];
+        $updateUser->execute($data);
+        $_SESSION=$data;
     }
     public function connect()
     {
@@ -78,20 +80,12 @@ class User
   
     public function getlogin()
     {
-        $getLog = $this->bd->prepare("SELECT utilisateurs.login FROM utilisateurs WHERE login = ?");
-        $getLog->execute([$this->login]);
-        $result = $getLog->fetchAll(PDO::FETCH_ASSOC);
-        var_dump($result[0]['login']);
-        return $result[0]['login'];
+       return $this->login; 
 
     }
     public function setlogin($login)
     {
-        $setLog = $this->bd->prepare("INSERT INTO 'utilisateurs'('login') VALUES ($login)");
-        $setLog->execute([$this->login]);
-        $result = $setLog->fetchAll(PDO::FETCH_ASSOC);
-        var_dump($result['login']);
-        return $result['login'];
+        
     }
     public function getpassword()
     {
