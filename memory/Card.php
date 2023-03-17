@@ -44,7 +44,16 @@ class Card
     function setState($state){
         $this->state=$state;
     }
-   
+    function state()
+    {
+        if ($this->state == "true") { // !!!!! ATTENTION aux = & == !!!!!!!
+            echo $this->img_face_up;
+            return true;
+        } else {
+            echo $this->img_face_down;
+            return false;
+        }
+    }
 
 }
 // $card=new Card("", "", "", "");
