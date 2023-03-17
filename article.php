@@ -1,29 +1,37 @@
 <?php
 session_start();
-$username = "root";
-$password = "";
-try {
-    $bd = new PDO("mysql:host=localhost;dbname=révisions;charset=utf8mb4", $username, $password);
-    $bd->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    echo "Connected successfully" . "<br>";
-} catch (PDOException $e) {
-    echo "Connection failed: " . $e->getMessage();
-}
+include("bd.php");
 function addArticle($article, $bd)
 {
-    
-    $addArticle = $bd->prepare("INSERT INTO `articles`(`article`, `id_utilisateurs`) VALUES (?,?)");
+
+    $addArticle = $bd->prepare("INSERT INTO `articles`(`article`, `id_utilisateur`) VALUES (?,?)");
     // var_dump($addArticle);
     $addArticle->execute([$article, $_SESSION['id']]);
     // var_dump($addArticle);
 }
-// var_dump($_SESSION);
+// function addCategorie($categorie, $bd){
+//     $addCategorie = $bd->prepare("INSERT INTO `categories`(`categorie`) VALUES (?), 'articles'('article') VALUES (?) SELECT categories.categorie, articles.article FROM liaison JOIN articles ON articles.id=id_article JOIN categories ON categories.id=id_categorie ");
+//     var_dump($addCategorie);
+//     $addCategorie->execute([$_POST['categorie']]);
+// }
+
+var_dump($_SESSION);
 
 ?>
 <?php if (isset($_POST['submit'])) : ?>
-    <?php addArticle($_POST['article'], $bd); ?>
+    <?php addArticle($_POST['article'], $bd) ?>
 <?php endif ?>
+
 <form action="" method="post">
-    <input type="text" name="article">
+    <input type="text" name="article"><br>
+    <?php //afficher la base de donnée
+    $afficheCategorie = $bd->prepare("SELECT * FROM categories");
+    $afficheCategorie->execute();
+    $result = $afficheCategorie->fetchAll(PDO::FETCH_ASSOC);
+    foreach ($result as $key => $value) { ?>
+        <input type="checkbox" name="categorie[]" value="<?= $value["id"] ?>">
+        <label><?= $value["name"] ?></label></br>
+    <?php }
+    ?>
     <button type="submit" name="submit">Add article</button>
 </form>

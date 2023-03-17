@@ -1,14 +1,6 @@
 <?php
 session_start();
-$username = "root";
-$password = "";
-try {
-    $bd = new PDO("mysql:host=localhost;dbname=révisions;charset=utf8mb4", $username, $password);
-    $bd->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    echo "Connected successfully" . "<br>";
-} catch (PDOException $e) {
-    echo "Connection failed: " . $e->getMessage();
-}
+include("bd.php");
 
 function displayUser($bd, $order)
 {
@@ -20,19 +12,19 @@ function displayUser($bd, $order)
 }
 // var_dump(displayUser($bd));
 
-if (isset($_GET['inverser'])) {
-    if ($_GET['inverser'] == "DESC") {
+if (isset($_GET['inverser'])) { 
+    if ($_GET['inverser'] == "DESC") { // si on c'est DESC transformer en ASC
         $order = "ASC";
         displayUser($bd, $order);
-    } else {
+    } else { // si c'est en ASC transformer en DESC
         $order = "DESC";
         displayUser($bd, $order);
     }
-} else {
+} else { // si on ne touche pas au bouton inverser, l'ordre est DESC 
     $order = "DESC";
     displayUser($bd, $order);
 }
-var_dump($_SESSION['order']);
+var_dump($order);
 ?>
 <table>
 

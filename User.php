@@ -1,6 +1,5 @@
 <?php
 session_start();
-
 class User
 {
     private $id;
@@ -24,46 +23,77 @@ class User
         $this->firstname = $firstname;
         $this->lastname = $lastname;
         $this->password = $password;
-        $username = "root";
-        $password = "";
-        try {
-            $this->bd = new PDO("mysql:host=localhost;dbname=révisions;charset=utf8mb4", $username, $password);
-            $this->bd->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            echo "Connected successfully" . "<br>";
-        } catch (PDOException $e) {
-            echo "Connection failed: " . $e->getMessage();
+    }
+    public function register($bd)
+    {
+        if ($this->loginUnique($bd)) {
+            if ($this->emailUnique($bd)) {
+                if ($this->isEmpty()) {
+                    $addUser = $bd->prepare("INSERT INTO `utilisateurs`(`login`, `password`, `email`, `firstname`, `lastname`) VALUES (?,?,?,?,?) ");
+                    $addUser->execute([$this->login, $this->password, $this->email, $this->firstname, $this->lastname]);
+                    header("Location:connexion.php");
+                }
+            } else {
+                echo " L'email existe déjà";
+            }
+        } else {
+            echo " Le login existe déjà";
         }
     }
-    public function register()
-    {
-        $addUser = $this->bd->prepare("INSERT INTO `utilisateurs`(`login`, `password`, `email`, `firstname`, `lastname`) VALUES (?,?,?,?,?) ");
-        $addUser->execute([$this->login, $this->password, $this->email, $this->firstname, $this->lastname]);
+    public function loginUnique($bd)
+    { // Vérifie que le login est bien unique
+        $findLogin = $bd->prepare("SELECT `login` FROM `utilisateurs` WHERE login=?");
+        $findLogin->execute([$_POST['login']]);
+        if ($findLogin->rowCount() < 1) {
+            return true;
+        } else {
+            return false;
+        }
     }
-    // public function update($login, $firstname, $lastname, $email, $password)
-    // {
-    //     $updateUser = $this->bd->prepare("UPDATE `utilisateurs` SET `login`=:login,`password`=:password,`email`=:email,`firstname`=:firstname,`lastname`=:lastname WHERE id=:id");
-    //     $data = ['login' => $this->login,'password' => $this->password,'email' => $this->email,'firstname' => $this->firstname,'lastname' => $this->lastname,'id' => $_SESSION['id']];
-    //     $updateUser->execute($data);
-    //     $_SESSION=$data;
-    // }
-    public function update($login, $firstname, $lastname, $email, $password)
+    public function emailUnique($bd)
+    { // Vérifie que l'email' est bien unique
+        $findemail = $bd->prepare("SELECT `email` FROM `utilisateurs` WHERE email=?");
+        $findemail->execute([$_POST['email']]);
+        if ($findemail->rowCount() < 1) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    public function isEmpty()
     {
-        $updateUser = $this->bd->prepare("UPDATE `utilisateurs` SET `login`=?,`password`=?,`email`=?,`firstname`=?,`lastname`=? WHERE id=?");
+        if (!empty($_POST['login']) && !empty($_POST['firstname']) && !empty($_POST['lastname']) && !empty($_POST['email']) && !empty($_POST['password']) && !empty($_POST['confirm_password'])) {
+            return true;
+        } else {
+            echo "Il faut remplir tout les champs";
+            return false;
+        }
+    }
+
+    public function update($login, $firstname, $lastname, $email, $password, $bd)
+    {
+        $updateUser = $bd->prepare("UPDATE `utilisateurs` SET `login`=?,`password`=?,`email`=?,`firstname`=?,`lastname`=? WHERE id=?");
         //mise à jour des attributs
-        $this->login=$login;  $this->password=$password; $this->email=$email; $this->firstname=$firstname; $this->lastname=$lastname;
+        $this->login = $login;
+        $this->password = $password;
+        $this->email = $email;
+        $this->firstname = $firstname;
+        $this->lastname = $lastname;
         // $this->setlogin($login);
-        $updateUser->execute([$this->login, $this->password, $this->email, $this->firstname, $this->lastname, 
-        //mise à jour de la session :
-        $_SESSION['id']]);
-        $_SESSION['login']=$login;
-        $_SESSION['password']=$password;
-        $_SESSION['email']=$email;
-        $_SESSION['firstname']=$firstname;
-        $_SESSION['lastname']=$lastname;        
+        $updateUser->execute([
+            $this->login, $this->password, $this->email, $this->firstname, $this->lastname,
+            //mise à jour de la session :
+            $_SESSION['id']
+        ]);
+        $_SESSION['login'] = $login;
+        $_SESSION['password'] = $password;
+        $_SESSION['email'] = $email;
+        $_SESSION['firstname'] = $firstname;
+        $_SESSION['lastname'] = $lastname;
     }
-    public function connect($login,$password)
+    public function connect($login, $password, $bd)
     {
-        $connect = $this->bd->prepare("SELECT * from utilisateurs WHERE login=? AND password=?");
+        $connect = $bd->prepare("SELECT * from utilisateurs WHERE login=? AND password=?");
         $connect->execute([$this->login, $this->password]);
         $result = $connect->fetchAll(PDO::FETCH_ASSOC);
         $count = $connect->rowCount();
@@ -85,46 +115,51 @@ class User
         if (empty($_SESSION)) {
             echo "false";
             return false;
-            
         } else {
             echo "true";
             return true;
-        
         }
     }
-  
+
     public function getlogin()
     {
-       return $this->login; 
-
+        return $this->login;
     }
     public function setlogin($login)
     {
-        $this->login=$login; 
+        $this->login = $login;
     }
     public function getpassword()
-    {return $this->login;
+    {
+        return $this->password;
     }
     public function setpassword($password)
     {
+        $this->password = $password;
     }
     public function getemail()
-    {return $this->login;
+    {
+        return $this->email;
     }
     public function setemail($email)
     {
+        $this->email = $email;
     }
     public function getfirstname()
-    {return $this->login;
+    {
+        return $this->firstname;
     }
     public function setfirstname($firstname)
     {
+        $this->firstname = $firstname;
     }
     public function getlasttname()
-    {return $this->login;
+    {
+        return $this->lastname;
     }
     public function setlastname($lastname)
     {
+        $this->lastname = $lastname;
     }
 }
 // $user = new User('test', 'test', 'test', 'test', 'test');
