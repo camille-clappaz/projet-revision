@@ -2,10 +2,10 @@
 session_start();
 class Card
 {
-    private $id_card;
-    private $img_face_down;
-    private $img_face_up;
-    private $state;
+    public $id_card;
+    public $img_face_down;
+    public $img_face_up;
+    public $state;
 
     public function __construct(
         $id_card,
