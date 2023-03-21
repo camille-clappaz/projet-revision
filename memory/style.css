@@ -1,0 +1,9 @@
+img{
+    width:200px;
+    height: 250px;
+}
+.plateau{
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+}

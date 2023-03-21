@@ -1,3 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Document</title>
+</head>
+<body>
+    
+</body>
+</html>
 <?php
 session_start();
 class Card
@@ -9,14 +22,14 @@ class Card
 
     public function __construct(
         $id_card,
-        $img_face_down,
+        $img_face_down ,
         $img_face_up,
         $state=false
 
     ) {
         $this->id_card = $id_card;
-        $this->img_face_down = $img_face_down;
-        $this->img_face_up = $img_face_up;
+        $this->img_face_down = $img_face_down ;
+        $this->img_face_up = $img_face_up ;
         $this->state = $state;
     }
 
@@ -46,13 +59,16 @@ class Card
     }
     function state()
     {
-        if ($this->state == "true") { // !!!!! ATTENTION aux = & == !!!!!!!
-            echo $this->img_face_up;
+        if ($this->state == true) { // !!!!! ATTENTION aux = & == !!!!!!!
+            echo " <img src='$this->img_face_up.jpg' alt=''>";
+            var_dump($this->img_face_up);
             return true;
         } else {
-            echo $this->img_face_down;
+            echo " <img src='$this->img_face_down.jpg' alt=''>";
+            var_dump($this->img_face_down);
             return false;
         }
+        
     }
 
 }
