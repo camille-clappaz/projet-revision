@@ -10,11 +10,9 @@
 </head>
 
 <body>
-
 </body>
 
 </html>
-
 <?php
 
 require("Card.php");
@@ -26,45 +24,33 @@ function creerCartes()
         $card[$i] = new Card($i, $img_face_down, $i . ".jpg", false);
         $card[$i + 1] = new Card($i + 1, $img_face_down, $i . ".jpg", false);
     }
-    $_SESSION['plateau']=$card;
+    $_SESSION['plateau'] = $card;
     return $card; // NE PAS OUBLIER DE RETOURNER LE $card!!!!!!!
 }
-var_dump($_SESSION);
+// var_dump($_SESSION['plateau']);
 function afficherCartes()
 {
     $card = creerCartes();
+    
 ?>
     <form action="" method="get">
         <?php
 
-        foreach ($card as $cartes) {
-            if (isset($_GET["retourner"])) {
-                if ($cartes->getState() == false) {
-                    $cartes->setState(true);
+        foreach ($_SESSION["plateau"] as $cartes) {
+            cliqueCarte($cartes);
+            if ($cartes->getState() == false) {
         ?>
-                    <button type="submit" value="<?= $cartes->getId_card() ?>" name="retourner">
-                        <img src="<?= $cartes->getImg_face_up() ?>" alt="">
-                    </button>
+                <button type="submit" value="<?= $cartes->getId_card() ?>" name="retourner">
+                    <img src="<?= $cartes->getImg_face_down() ?>" alt="">
+                </button>
+            <?php
 
 
-
-                <?php
-
-                } else {
-                    $cartes->setState(false);
-                ?>
-                    <button type="submit" value="<?= $cartes->getId_card() ?>" name="retourner">
-                        <img src="issets\img\<?= $cartes->getImg_face_down() ?>" alt="">
-                    </button>
-        <?php
-                }
-            }
-            else{
-                $cartes->setState(false);
-                ?>
-                    <button type="submit" value="<?= $cartes->getId_card() ?>" name="retourner">
-                        <img src="issets\img\<?= $cartes->getImg_face_down() ?>" alt="">
-                    </button>
+            } else {
+            ?>
+                <button type="submit" value="<?= $cartes->getId_card() ?>" name="retourner">
+                    <img src="issets\img\<?= $cartes->getImg_face_up() ?>" alt="">
+                </button>
         <?php
             }
         }
@@ -72,66 +58,42 @@ function afficherCartes()
     </form>
 <?php
 }
+function cliqueCarte($cartes)
+{
+    if (isset($_GET['retourner'])) {
+        if ($_GET['retourner'] == $cartes->getId_card()) {
+            $cartes->setState(true);
+            return true;
+        }
+    }
+}
+
+
+
+
+// function resetGame()
+// {
+//     if (isset($_GET['reset'])) {
+//         session_destroy();
+//         unset($_GET);
+//         header('location: memory.php');
+//     }
+// }
+// resetGame();
 AfficherCartes();
+// var_dump($_SESSION);
+// resetGame();
+
+
+
 
 ?>
-
-
-
-
-<?php
-
-// if (isset($_GET["retourner"])) {
-//     if ($_GET["retourner"] == "false") { // avec un seul = ça ne fonctionne pas ATTENTION!!!!
-//         $state = "true";
-//         $value->setState($state); // important pour mettre a jour le $state
-//         $value->state();
-//         var_dump($value->state());
-//     } else {
-//         $state = "false";
-//         $value->setState($state);
-//         $value->state();
-//         var_dump($value->state());
-//     }
-// } else {
-//     $state = "false";
-//     $value->setState($state);
-//     $value->state();
-//     var_dump($value->state());
-// }
-?>
+<form action="" method="get">
+    <button type="submit" name="reset">RESET</button>
+</form>
 
 
 
 
 
 
-
-<?php
-
-// var_dump($key); // id_card
-// var_dump($value); // objet Card 
-
-
-
-// if (isset($_GET["retourner"])) {
-//     if ($_GET["retourner"] == "false") { // avec un seul = ça ne fonctionne pas ATTENTION!!!!
-//         $state = "true";
-//         $value->setState($state); // important pour mettre a jour le $state
-//         $value->state();
-//         var_dump($value->state());
-//     } else {
-//         $state = "false";
-//         $value->setState($state);
-//         $value->state();
-//         var_dump($value->state());
-//     }
-// } else {
-//     $state = "false";
-//     $value->setState($state);
-//     $value->state();
-//     var_dump($value->state());
-// }
-// 
-?>
-<!-- // <button type='submit' name='retourner' value=<?= $value->getState() ?>>Retourner</button> -->
