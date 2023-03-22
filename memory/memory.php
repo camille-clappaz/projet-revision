@@ -16,7 +16,9 @@
 <?php
 
 require("Card.php");
-
+// if(!isset($_SESSION["2cartes"])){
+//     $_SESSION["2cartes"]=[];
+// }
 function creerCartes()
 {
     $img_face_down = "issets\img\oeil_sauron.jpg";
@@ -25,31 +27,31 @@ function creerCartes()
         $card[$i + 1] = new Card($i + 1, $img_face_down, $i . ".jpg", false);
     }
     $_SESSION['plateau'] = $card;
-    return $card; // NE PAS OUBLIER DE RETOURNER LE $card!!!!!!!
+    return $_SESSION['plateau']; // NE PAS OUBLIER DE RETOURNER LE $card!!!!!!!
 }
 // var_dump($_SESSION['plateau']);
 function afficherCartes()
 {
-    $card = creerCartes();
-    
+     $cartes = creerCartes();
+
 ?>
     <form action="" method="get">
         <?php
 
-        foreach ($_SESSION["plateau"] as $cartes) {
-            cliqueCarte($cartes);
-            if ($cartes->getState() == false) {
+        foreach ($cartes as $carte) {
+            verifCarte($carte);
+            if ($carte->getState() == false) {
         ?>
-                <button type="submit" value="<?= $cartes->getId_card() ?>" name="retourner">
-                    <img src="<?= $cartes->getImg_face_down() ?>" alt="">
+                <button type="submit" value="<?= $carte->getId_card(); ?>" name="retourner">
+                    <img src="<?= $carte->getImg_face_down(); ?>" alt="">
                 </button>
             <?php
 
 
             } else {
             ?>
-                <button type="submit" value="<?= $cartes->getId_card() ?>" name="retourner">
-                    <img src="issets\img\<?= $cartes->getImg_face_up() ?>" alt="">
+                <button type="submit" value="<?= $carte->getId_card(); ?>" name="retourner">
+                    <img src="issets\img\<?= $carte->getImg_face_up(); ?>" alt="">
                 </button>
         <?php
             }
@@ -58,31 +60,54 @@ function afficherCartes()
     </form>
 <?php
 }
-function cliqueCarte($cartes)
+function cliqueCarte($carte)
 {
     if (isset($_GET['retourner'])) {
-        if ($_GET['retourner'] == $cartes->getId_card()) {
-            $cartes->setState(true);
+        if ($_GET['retourner'] == $carte->getId_card()) {
+            // $carte->setState(true);
             return true;
         }
     }
 }
 
+function verifCarte($carte)
+{
+    if (cliqueCarte($carte)) { // on verifie qu'on a cliqué sur une carte grâce à son id.
+    if (isset($_SESSION["2cartes"])) {
+        if (count($_SESSION["2cartes"]) < 2) { //soit il y a 0,1 carte, si il y en a moins de 2 on peut ajouter une carte dans le tableau.
+                $carte->setState(true); // on change son état pour qu'elle se retourne
+                array_push($_SESSION["2cartes"], $carte);
+                var_dump($_SESSION["2cartes"]); // puis on la met dans notre variable de session pour la laisser afficher
+            }
+            else {
 
+                $_SESSION["2cartes"] = [];
+            }
+        } 
 
+        // si il y en a deux, le tableau se vide et la carte sur laquelle on a cliquer se met à la place
 
-// function resetGame()
-// {
-//     if (isset($_GET['reset'])) {
-//         session_destroy();
-//         unset($_GET);
-//         header('location: memory.php');
+    } 
+    
+//     else {
+//         $_SESSION["2cartes"] = [];
 //     }
-// }
-// resetGame();
+}
+
+// var_dump($_SESSION['2cartes']);
+
+function resetGame()
+{
+    if (isset($_GET['reset'])) {
+        session_destroy();
+        header('location: memory.php');
+    }
+}
+resetGame();
+
 AfficherCartes();
-// var_dump($_SESSION);
-// resetGame();
+
+var_dump($_SESSION)
 
 
 
@@ -91,9 +116,3 @@ AfficherCartes();
 <form action="" method="get">
     <button type="submit" name="reset">RESET</button>
 </form>
-
-
-
-
-
-
