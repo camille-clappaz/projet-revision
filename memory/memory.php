@@ -16,9 +16,7 @@
 <?php
 
 require("Card.php");
-// if(!isset($_SESSION["2cartes"])){
-//     $_SESSION["2cartes"]=[];
-// }
+
 function creerCartes()
 {
     $img_face_down = "issets\img\oeil_sauron.jpg";
@@ -32,7 +30,7 @@ function creerCartes()
 // var_dump($_SESSION['plateau']);
 function afficherCartes()
 {
-     $cartes = creerCartes();
+    $cartes = creerCartes();
 
 ?>
     <form action="" method="get">
@@ -73,25 +71,31 @@ function cliqueCarte($carte)
 function verifCarte($carte)
 {
     if (cliqueCarte($carte)) { // on verifie qu'on a cliqué sur une carte grâce à son id.
-    if (isset($_SESSION["2cartes"])) {
-        if (count($_SESSION["2cartes"]) < 2) { //soit il y a 0,1 carte, si il y en a moins de 2 on peut ajouter une carte dans le tableau.
+        if (isset($_SESSION["2cartes"])) {
+            if (count($_SESSION["2cartes"]) < 2) { //soit il y a 0,1 carte, si il y en a moins de 2 on peut ajouter une carte dans le tableau.
                 $carte->setState(true); // on change son état pour qu'elle se retourne
                 array_push($_SESSION["2cartes"], $carte);
                 var_dump($_SESSION["2cartes"]); // puis on la met dans notre variable de session pour la laisser afficher
-            }
-            else {
-
+            } else {
+                if ($_SESSION['2cartes'][0]->img_face_up == $_SESSION['2cartes'][1]->img_face_up) {
+                    // $_SESSION['2cartes'][0]->setState(true);
+                    // $_SESSION['2cartes'][1]->setState(true);
+                    // $_SESSION["trueCartes"]=[];
+                    // array_push($_SESSION['trueCartes'], $_SESSION['2cartes']);
+                    echo " paire de carte";
+                } else {
+                    echo "pas les memes";
+                }
+                // $_SESSION['2cartes'][0]->setState(true); 
+                // $_SESSION['2cartes'][1]->setState(true);
                 $_SESSION["2cartes"] = [];
             }
-        } 
-
+        } else {
+            $_SESSION["2cartes"] = [];
+        }
         // si il y en a deux, le tableau se vide et la carte sur laquelle on a cliquer se met à la place
 
-    } 
-    
-//     else {
-//         $_SESSION["2cartes"] = [];
-//     }
+    }
 }
 
 // var_dump($_SESSION['2cartes']);
@@ -107,7 +111,7 @@ resetGame();
 
 AfficherCartes();
 
-var_dump($_SESSION)
+var_dump($_SESSION);
 
 
 
