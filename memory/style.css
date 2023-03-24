@@ -7,3 +7,12 @@ img{
     flex-direction: column;
     flex-wrap: wrap;
 }
+.messagefin{
+    
+        font-size: 200%;
+        margin-top: 3%;
+        text-align: center;
+        color: red;
+        font-weight: bolder;
+      
+}

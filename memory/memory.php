@@ -1,5 +1,6 @@
 <?php
 require("Card.php");
+$_SESSION['messagefin'] = "";
 ?>
 
 <!DOCTYPE html>
@@ -22,9 +23,14 @@ require("Card.php");
                 <option value="6">12 Cartes</option>
                 <option value="12">24 Cartes</option>
             </select>
-            <input type="submit" name="Envoyer">
+            <input type="submit" name="Choisir">
         </form>
     </div>
+    <?php AfficherCartes();
+    endGame();?>
+    <div class="messagefin"><?= $_SESSION['messagefin']; ?></div>
+
+
 </body>
 
 </html>
@@ -55,9 +61,9 @@ function afficherCartes()
         <?php
         creerCartes();
         foreach ($_SESSION['plateau'] as $carte) {
-           verifCarte($carte);
-            
-           
+            verifCarte($carte);
+
+
             if ($carte->getState() == false) {
         ?>
                 <button type="submit" value="<?= $carte->getId_card(); ?>" name="retourner">
@@ -82,7 +88,6 @@ function cliqueCarte($carte) // On vérifie qu'on à cliqué sur la carte grâce
     if (isset($_GET['retourner'])) {
         if ($_GET['retourner'] == $carte->getId_card()) {
             $carte->setState(true);
-             
             return true;
         }
     }
@@ -90,46 +95,50 @@ function cliqueCarte($carte) // On vérifie qu'on à cliqué sur la carte grâce
 
 function verifCarte($carte)
 {
-    
-        // on verifie qu'on a cliqué sur une carte grâce à son id. 
-        if (isset($_SESSION["2cartes"])) { 
-            if (count($_SESSION["2cartes"]) < 2) { //soit il y a 0,1 carte, si il y en a moins de 2 on peut ajouter une carte dans le tableau.
-                // on change son état pour qu'elle se retourne
-                if (cliqueCarte($carte)) { 
-                    $carte->setState(true);
-                array_push($_SESSION["2cartes"], $carte);}
-                }else {
-                    if ($_SESSION['2cartes'][0]->img_face_up == $_SESSION['2cartes'][1]->img_face_up) { // on verifie si c'est une paire
-                        //les cartes sont paires, on met leur etat à true et on les envois dans une variable de session $_SESSION['trueCartes']
-                        // si elle est définit, sinon on la définit
-                        if (isset($_SESSION['trueCartes'])) { // si la variable est définit
-                            $_SESSION['2cartes'][0]->setState(true); // comme c'est paire, l'état des cartes est true
-                            $_SESSION['2cartes'][1]->setState(true);
-                            // echo " paire de carte";
-                        } else {
-                            $_SESSION['trueCartes'] = []; // si pas définit, on la définit ici
-                        }
-                        array_push($_SESSION['trueCartes'], $_SESSION['2cartes']); // on les envoi dans une variables de session pour qu'elles restent en face up
-                        $_SESSION["2cartes"] = []; // on vide la session["2carte"] pour continuer le jeu
-                         
-                    } else {
-                        $_SESSION['2cartes'][0]->setState(false);
-                        $_SESSION['2cartes'][1]->setState(false);
-                        $_SESSION["2cartes"] = [];
-                        // echo "pas les memes";
-                    }
+
+    // on verifie qu'on a cliqué sur une carte grâce à son id. 
+    if (isset($_SESSION["2cartes"])) {
+        if (count($_SESSION["2cartes"]) < 2) { //soit il y a 0,1 carte, si il y en a moins de 2 on peut ajouter une carte dans le tableau.
+            // on change son état pour qu'elle se retourne
+            if (cliqueCarte($carte)) {
+                $carte->setState(true);
+                array_push($_SESSION["2cartes"], $carte);
             }
-            // si il y en a deux, le tableau se vide et la carte sur laquelle on a cliquer se met à la place
         } else {
-            $_SESSION["2cartes"] = [];
-            // var_dump($_SESSION["2cartes"]);
+            if ($_SESSION['2cartes'][0]->img_face_up == $_SESSION['2cartes'][1]->img_face_up) { // on verifie si c'est une paire
+                //les cartes sont paires, on met leur etat à true et on les envois dans une variable de session $_SESSION['trueCartes']
+                // si elle est définit, sinon on la définit
+                if (isset($_SESSION['trueCartes'])) { // si la variable est définit
+                    $_SESSION['2cartes'][0]->setState(true); // comme c'est paire, l'état des cartes est true
+                    $_SESSION['2cartes'][1]->setState(true);
+                    // echo " paire de carte";
+                } else {
+                    $_SESSION['trueCartes'] = []; // si pas définit, on la définit ici
+                }
+                array_push($_SESSION['trueCartes'], $_SESSION['2cartes']); // on les envoi dans une variables de session pour qu'elles restent en face up
+                $_SESSION["2cartes"] = []; // on vide la session["2carte"] pour continuer le jeu
+
+            } else {
+                $_SESSION['2cartes'][0]->setState(false);
+                $_SESSION['2cartes'][1]->setState(false);
+                $_SESSION["2cartes"] = [];
+                // echo "pas les memes";
+            }
         }
-    
+        // si il y en a deux, le tableau se vide et la carte sur laquelle on a cliquer se met à la place
+    } else {
+        $_SESSION["2cartes"] = [];
+    }
 }
-
-
-// var_dump($_SESSION['2cartes']);
-
+function endGame()
+{
+    //Quand toutes les cartes sont true, c'est la fin du jeu. Message de fin de partie et score.
+    if (isset($_SESSION['trueCartes'])) {
+        if (count($_SESSION['trueCartes']) == (count($_SESSION['plateau']) / 2)) { // on divise par deux car les cartes sont par paires dans trueCartes
+            $_SESSION['messagefin'] = "Partie terminée, bravo!";
+        }
+    }
+}
 function resetGame()
 {
     if (isset($_GET['reset'])) {
@@ -139,12 +148,26 @@ function resetGame()
 }
 resetGame();
 
-AfficherCartes();
+// AfficherCartes();
+endGame();
+var_dump($_SESSION['messagefin']);
 
+
+// if(endGame()){
+//     echo"BIEN OUEJ MEC!"
+// ;}
 var_dump($_SESSION);
 
+// var_dump(count($_SESSION['plateau']));
+// var_dump(count($_SESSION['trueCartes']));
+function nbCartes()
+{
 
-
+    if (isset($_POST['choisir'])) {
+        $nb = $_POST['choisir'];
+        return $nb;
+    }
+}
 
 ?>
 <form action="" method="get">
