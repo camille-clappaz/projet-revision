@@ -80,6 +80,7 @@ function cliqueCarte($carte) // On vérifie qu'on à cliqué sur la carte grâce
     if (isset($_GET['retourner'])) {
         if ($_GET['retourner'] == $carte->getId_card()) {
             $carte->setState(true);
+             
             return true;
         }
     }
@@ -87,42 +88,53 @@ function cliqueCarte($carte) // On vérifie qu'on à cliqué sur la carte grâce
 
 function verifCarte($carte)
 {
-    if (cliqueCarte($carte)) { // on verifie qu'on a cliqué sur une carte grâce à son id.
+    if (cliqueCarte($carte)) { // on verifie qu'on a cliqué sur une carte grâce à son id. 
         if (isset($_SESSION["2cartes"])) {
-            if (count($_SESSION["2cartes"]) < 2) { //soit il y a 0,1 carte, si il y en a moins de 2 on peut ajouter une carte dans le tableau.
-                $carte->setState(true); // on change son état pour qu'elle se retourne
+            if (count($_SESSION["2cartes"]) <= 2) { //soit il y a 0,1 carte, si il y en a moins de 2 on peut ajouter une carte dans le tableau.
+                // $carte->setState(true); // on change son état pour qu'elle se retourne
                 array_push($_SESSION["2cartes"], $carte);
-                var_dump($_SESSION["2cartes"]); // puis on la met dans notre variable de session pour la laisser afficher
-            // } else {
-            //     if ($_SESSION['2cartes'][0]->img_face_up == $_SESSION['2cartes'][1]->img_face_up) {// on verifie si c'est une paire
-            //         //les cartes sont paires, on met leur etat à true et on les envois dans une variable de session $_SESSION['trueCartes']
-            //         // si elle est définit, sinon on la définit
-            //         if(isset($_SESSION['trueCartes'])){ // si la variable est définit
-            //         $_SESSION['2cartes'][0]->setState(true); // comme c'est paire, l'état des cartes est true
-            //         $_SESSION['2cartes'][1]->setState(true); 
-            //          echo " paire de carte";}
-            //         else{
-            //             $_SESSION['trueCartes']=[]; // si pas définit, on la définit ici
-            //         }
-            //         array_push($_SESSION['trueCartes'], $_SESSION['2cartes']);// on les envoi dans une variables de session pour qu'elles restent en face up
-            //         $_SESSION["2cartes"] = []; // on vide la session["2carte"] pour continuer le jeu
-            //     } else {
-            //         $_SESSION['2cartes'][0]->setState(false);
-            //         $_SESSION['2cartes'][1]->setState(false);
-            //         $_SESSION["2cartes"] = [];
-            //         echo "pas les memes";
-            //     }
-            //     // $_SESSION['2cartes'][0]->setState(true); 
-            //     // $_SESSION['2cartes'][1]->setState(true);
-            //     $_SESSION["2cartes"] = [];
-            // }
+                // var_dump("on est tjs laaaa");
+                // var_dump($_SESSION["2cartes"]); // puis on la met dans notre variable de session pour la laisser afficher
+                var_dump("on est la ");
+                if (count($_SESSION["2cartes"]) == 2) {
+                    if ($_SESSION['2cartes'][0]->img_face_up == $_SESSION['2cartes'][1]->img_face_up) { // on verifie si c'est une paire
+                        //les cartes sont paires, on met leur etat à true et on les envois dans une variable de session $_SESSION['trueCartes']
+                        // si elle est définit, sinon on la définit
+                        if (isset($_SESSION['trueCartes'])) { // si la variable est définit
+                            $_SESSION['2cartes'][0]->setState(true); // comme c'est paire, l'état des cartes est true
+                            $_SESSION['2cartes'][1]->setState(true);
+                            echo " paire de carte";
+                        } else {
+                            $_SESSION['trueCartes'] = []; // si pas définit, on la définit ici
+                        }
+                        array_push($_SESSION['trueCartes'], $_SESSION['2cartes']); // on les envoi dans une variables de session pour qu'elles restent en face up
+                        $_SESSION["2cartes"] = []; // on vide la session["2carte"] pour continuer le jeu
+                        
+                    } else {
+                        $_SESSION['2cartes'][0]->setState(false);
+                        $_SESSION['2cartes'][1]->setState(false);
+                        $_SESSION["2cartes"] = [];
+                        echo "pas les memes";
+                    }
+                    
+                }
+
+                // $_SESSION['2cartes'][0]->setState(true); 
+                // $_SESSION['2cartes'][1]->setState(true);
+                
+            }
+
+
+    
+
+            // si il y en a deux, le tableau se vide et la carte sur laquelle on a cliquer se met à la place
         } else {
             $_SESSION["2cartes"] = [];
+            var_dump($_SESSION["2cartes"]);
         }
-        // si il y en a deux, le tableau se vide et la carte sur laquelle on a cliquer se met à la place
-
     }
-}}
+}
+
 
 // var_dump($_SESSION['2cartes']);
 
