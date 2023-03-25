@@ -23,22 +23,25 @@ $_SESSION['messagefin'] = "";
                 <option value="6">12 Cartes</option>
                 <option value="12">24 Cartes</option>
             </select>
-           <button type="submit" name ="choisir">Choisir</button>
+            <button type="submit" name="choisir">Choisir</button>
         </form>
     </div>
+    <?php if (isset($_SESSION['nbCoups'])) {
+        if ($_SESSION['nbCoups'] == 1) { ?>
+            <div class="coups">Vous avez joué <?= $_SESSION["nbCoups"] ?> coup</div>
+        <?php } else { ?>
+            <div class="coups">Vous avez joué <?= $_SESSION["nbCoups"] ?> coups</div>
+    <?php }
+    } ?>
+
     <?php
-    if (isset($_POST['choisir'])) {
-        $_SESSION['nb']=$_POST["paires"]; 
-    }
-    
-    AfficherCartes($_SESSION['nb']);
+    $_SESSION['nb'] = (nbCartes()); //on récupère le nombre de carte séléctionnées
+    AfficherCartes($_SESSION['nb']); //puis on affiche le bon nombre de cartes
     endGame(); ?>
     <div class="messagefin"><?= $_SESSION['messagefin']; ?></div>
     <form action="" method="get">
         <button type="submit" name="reset">RESET</button>
     </form>
-
-
 </body>
 
 </html>
@@ -113,6 +116,11 @@ function verifCarte($carte)
                 array_push($_SESSION["2cartes"], $carte);
             }
         } else {
+            if (isset($_SESSION['nbCoups'])) { 
+                $_SESSION['nbCoups']++;
+            } else {
+                $_SESSION['nbCoups'] = 1;
+            }
             if ($_SESSION['2cartes'][0]->img_face_up == $_SESSION['2cartes'][1]->img_face_up) { // on verifie si c'est une paire
                 //les cartes sont paires, on met leur etat à true et on les envois dans une variable de session $_SESSION['trueCartes']
                 // si elle est définit, sinon on la définit
@@ -140,14 +148,13 @@ function verifCarte($carte)
 }
 function endGame()
 {
-   // Quand toutes les cartes sont true, c'est la fin du jeu. Message de fin de partie et score.
+    // Quand toutes les cartes sont true, c'est la fin du jeu. Message de fin de partie et score.
     if (isset($_SESSION['trueCartes'])) {
         if (count($_SESSION['trueCartes']) == (count($_SESSION['plateau']) / 2)) { // on divise par deux car les cartes sont par paires dans trueCartes
-
-            $_SESSION['messagefin'] = "Partie terminée, bravo!";
+            $_SESSION["score"] = (count($_SESSION['trueCartes']) * 4) / $_SESSION['nbCoups'];
+            $_SESSION['messagefin'] = "Partie terminée, bravo! Votre score: " . $_SESSION['score'];
         }
     }
-    
 }
 function resetGame()
 {
@@ -159,16 +166,16 @@ function resetGame()
 resetGame();
 
 
-
+var_dump($_SESSION);
 
 // var_dump(count($_SESSION['plateau']));
 // var_dump(count($_SESSION['trueCartes']));
-// function nbCartes()
-// {
-//     if (isset($_POST['choisir'])) {
-//         return $_POST['paires'];
-//     }
-// }
+function nbCartes()
+{
+    if (isset($_POST['choisir'])) {
+        return $_POST['paires'];
+    }
+}
 
 
 ?>
