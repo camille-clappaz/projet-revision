@@ -11,7 +11,7 @@ $_SESSION['messagefin'] = "";
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
-    <title>Document</title>
+    <title>Memory</title>
 </head>
 
 <body>
@@ -23,12 +23,20 @@ $_SESSION['messagefin'] = "";
                 <option value="6">12 Cartes</option>
                 <option value="12">24 Cartes</option>
             </select>
-            <input type="submit" name="Choisir">
+           <button type="submit" name ="choisir">Choisir</button>
         </form>
     </div>
-    <?php AfficherCartes();
-    endGame();?>
+    <?php
+    if (isset($_POST['choisir'])) {
+        $_SESSION['nb']=$_POST["paires"]; 
+    }
+    
+    AfficherCartes($_SESSION['nb']);
+    endGame(); ?>
     <div class="messagefin"><?= $_SESSION['messagefin']; ?></div>
+    <form action="" method="get">
+        <button type="submit" name="reset">RESET</button>
+    </form>
 
 
 </body>
@@ -37,11 +45,11 @@ $_SESSION['messagefin'] = "";
 <?php
 
 
-function creerCartes() // on crée les cartes et on les affiches mélangées.
+function creerCartes($nb) // on crée les cartes et on les affiches mélangées.
 {
     if (empty($_SESSION['plateau'])) { // on crée une variable de session pour stocker toutes les carte dedans 
         $_SESSION['plateau'] = [];
-        for ($i = 0; $i < 6; $i += 2) { // $i+=2 => $i=$i+2
+        for ($i = 0; $i < ($nb * 2); $i += 2) { // $i+=2 => $i=$i+2
             $img_face_up = 'issets/img/' . $i . '.jpg';
             $img_face_down = "issets\img\oeil_sauron.jpg";
             $card[$i] = new Card($i, $img_face_down, $img_face_up, false);
@@ -54,12 +62,12 @@ function creerCartes() // on crée les cartes et on les affiches mélangées.
     }
 }
 
-function afficherCartes()
+function afficherCartes($nb)
 {
 ?>
     <form action="" method="get">
         <?php
-        creerCartes();
+        creerCartes($nb);
         foreach ($_SESSION['plateau'] as $carte) {
             verifCarte($carte);
 
@@ -87,7 +95,7 @@ function cliqueCarte($carte) // On vérifie qu'on à cliqué sur la carte grâce
 {
     if (isset($_GET['retourner'])) {
         if ($_GET['retourner'] == $carte->getId_card()) {
-            $carte->setState(true);
+            // $carte->setState(true); //si on le met ici, PROBLEME DE RECHARGEMENT donc PB AFFICHAGE MESSAGE
             return true;
         }
     }
@@ -132,12 +140,14 @@ function verifCarte($carte)
 }
 function endGame()
 {
-    //Quand toutes les cartes sont true, c'est la fin du jeu. Message de fin de partie et score.
+   // Quand toutes les cartes sont true, c'est la fin du jeu. Message de fin de partie et score.
     if (isset($_SESSION['trueCartes'])) {
         if (count($_SESSION['trueCartes']) == (count($_SESSION['plateau']) / 2)) { // on divise par deux car les cartes sont par paires dans trueCartes
+
             $_SESSION['messagefin'] = "Partie terminée, bravo!";
         }
     }
+    
 }
 function resetGame()
 {
@@ -148,28 +158,17 @@ function resetGame()
 }
 resetGame();
 
-// AfficherCartes();
-endGame();
-var_dump($_SESSION['messagefin']);
 
 
-// if(endGame()){
-//     echo"BIEN OUEJ MEC!"
-// ;}
-var_dump($_SESSION);
 
 // var_dump(count($_SESSION['plateau']));
 // var_dump(count($_SESSION['trueCartes']));
-function nbCartes()
-{
+// function nbCartes()
+// {
+//     if (isset($_POST['choisir'])) {
+//         return $_POST['paires'];
+//     }
+// }
 
-    if (isset($_POST['choisir'])) {
-        $nb = $_POST['choisir'];
-        return $nb;
-    }
-}
 
 ?>
-<form action="" method="get">
-    <button type="submit" name="reset">RESET</button>
-</form>
